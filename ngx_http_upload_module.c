@@ -3488,7 +3488,8 @@ ngx_http_process_request_body(ngx_http_request_t *r, ngx_chain_t *body)
 static ngx_int_t upload_parse_content_disposition(ngx_http_upload_ctx_t *upload_ctx, ngx_str_t *content_disposition) { /* {{{ */
     char *filename_start, *filename_end;
     char *fieldname_start, *fieldname_end;
-    char *p, *q;
+    char *p;
+    //char *q;
 
     p = (char*)content_disposition->data;
 
@@ -3516,12 +3517,15 @@ static ngx_int_t upload_parse_content_disposition(ngx_http_upload_ctx_t *upload_
         /*
          * IE sends full path, strip path from filename 
          * Also strip all UNIX path references
-         */
+         *
+         * LittleInc: Lets NOT strip the path off the filename.
+         *
         for(q = filename_end-1; q > filename_start; q--)
             if(*q == '\\' || *q == '/') {
                 filename_start = q+1;
                 break;
             }
+        */
 
         upload_ctx->file_name.len = filename_end - filename_start;
         upload_ctx->file_name.data = ngx_palloc(upload_ctx->request->pool, upload_ctx->file_name.len + 1);
